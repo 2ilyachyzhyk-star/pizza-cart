@@ -33,7 +33,7 @@
 const pizzas = ["Pepperoni", "Margherita", "Hawaiian", "BBQ Chicken", "Veggie Supreme"];
 const prices = { Small: 10, Medium: 13, Large: 16 };
 
-let cart = [];
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 const menuDiv = document.getElementById("menu");
 
@@ -45,25 +45,32 @@ pizzas.forEach(pizza => {
   Object.keys(prices).forEach(size => {
     div.innerHTML += `
       ${size} ($${prices[size]})
-      <button onclick="addToCart('${pizza}', '${size}')">Add</button>
+      <button onclick="addToCart('${pizza}', '${size}', ${prices[size]})">Add</button>
     `;
   });
 
   menuDiv.appendChild(div);
 });
 
-function addToCart(pizza, size) {
-  cart.push({ pizza, size, price: prices[size] });
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function addToCart(name, size, price) {
+  cart.push({ name: `${name} (${size})`, price });
+  saveCart();
   updateCart();
 }
 
 function removeItem(index) {
   cart.splice(index, 1);
+  saveCart();
   updateCart();
 }
 
 function clearCart() {
   cart = [];
+  saveCart();
   updateCart();
 }
 
@@ -71,25 +78,24 @@ function updateCart() {
   const cartItems = document.getElementById("cart-items");
   const totalSpan = document.getElementById("total");
   const emptyMsg = document.getElementById("empty");
+  const checkoutBtn = document.getElementById("checkoutBtn");
 
   cartItems.innerHTML = "";
   let total = 0;
 
-  const checkoutBtn = document.getElementById("checkoutBtn");
-
-if (cart.length === 0) {
-  emptyMsg.style.display = "block";
-  checkoutBtn.style.display = "none";
-} else {
-  emptyMsg.style.display = "none";
-  checkoutBtn.style.display = "inline-block";
-}
+  if (cart.length === 0) {
+    emptyMsg.style.display = "block";
+    checkoutBtn.style.display = "none";
+  } else {
+    emptyMsg.style.display = "none";
+    checkoutBtn.style.display = "inline-block";
+  }
 
   cart.forEach((item, index) => {
     total += item.price;
     cartItems.innerHTML += `
       <li>
-        ${item.pizza} (${item.size}) - $${item.price}
+        ${item.name} - $${item.price}
         <button onclick="removeItem(${index})">Remove</button>
       </li>
     `;
@@ -97,10 +103,16 @@ if (cart.length === 0) {
 
   totalSpan.innerText = total;
 }
-  function checkout() {
+
+function checkout() {
   document.getElementById("checkoutMessage").innerText =
     "✅ Thank you for your order! (Demo Checkout)";
+  cart = [];
+  saveCart();
+  updateCart();
 }
+
+updateCart();
 </script>
 </body>
 </html>
