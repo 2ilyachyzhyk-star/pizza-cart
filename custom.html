@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Build Your Own Pizza</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    h2 { margin-top: 25px; }
+    label { display: block; margin: 5px 0; }
+    #totalBox { margin-top: 30px; font-size: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<h1>🍕 Build Your Own Pizza</h1>
+
+<h2>Choose Size</h2>
+<select id="size" onchange="calculateTotal()">
+  <option value="10">Small ($10)</option>
+  <option value="13">Medium ($13)</option>
+  <option value="16">Large ($16)</option>
+</select>
+
+<h2>Choose Crust</h2>
+<label><input type="radio" name="crust" value="0" checked onchange="calculateTotal()"> Regular (Included)</label>
+<label><input type="radio" name="crust" value="2" onchange="calculateTotal()"> Stuffed Crust (+$2)</label>
+<label><input type="radio" name="crust" value="1" onchange="calculateTotal()"> Thin Crust (+$1)</label>
+
+<h2>Choose Sauce</h2>
+<label><input type="radio" name="sauce" value="0" checked onchange="calculateTotal()"> Tomato (Included)</label>
+<label><input type="radio" name="sauce" value="1" onchange="calculateTotal()"> Alfredo (+$1)</label>
+<label><input type="radio" name="sauce" value="1" onchange="calculateTotal()"> BBQ (+$1)</label>
+
+<h2>Select Meats ($2 each)</h2>
+<label><input type="checkbox" class="meat" value="2" onchange="calculateTotal()"> Pepperoni</label>
+<label><input type="checkbox" class="meat" value="2" onchange="calculateTotal()"> Sausage</label>
+<label><input type="checkbox" class="meat" value="2" onchange="calculateTotal()"> Chicken</label>
+<label><input type="checkbox" class="meat" value="2" onchange="calculateTotal()"> Bacon</label>
+
+<h2>Select Toppings ($1 each)</h2>
+<label><input type="checkbox" class="topping" value="1" onchange="calculateTotal()"> Tomatoes</label>
+<label><input type="checkbox" class="topping" value="1" onchange="calculateTotal()"> Peppers</label>
+<label><input type="checkbox" class="topping" value="1" onchange="calculateTotal()"> Onions</label>
+<label><input type="checkbox" class="topping" value="1" onchange="calculateTotal()"> Mushrooms</label>
+<label><input type="checkbox" class="topping" value="1" onchange="calculateTotal()"> Olives</label>
+<label><input type="checkbox" class="topping" value="1" onchange="calculateTotal()"> Spinach</label>
+
+<div id="totalBox">
+Total Price: $<span id="total">10</span>
+</div>
+
+<script>
+function calculateTotal() {
+  let total = 0;
+
+  // Size
+  total += parseInt(document.getElementById("size").value);
+
+  // Crust
+  let crust = document.querySelector('input[name="crust"]:checked').value;
+  total += parseInt(crust);
+
+  // Sauce
+  let sauce = document.querySelector('input[name="sauce"]:checked').value;
+  total += parseInt(sauce);
+
+  // Meats
+  let meats = document.querySelectorAll(".meat:checked");
+  meats.forEach(meat => {
+    total += parseInt(meat.value);
+  });
+
+  // Toppings
+  let toppings = document.querySelectorAll(".topping:checked");
+  toppings.forEach(topping => {
+    total += parseInt(topping.value);
+  });
+
+  // Extra charge if more than 4 toppings
+  if (toppings.length > 4) {
+    total += (toppings.length - 4) * 1; 
+  }
+
+  document.getElementById("total").innerText = total;
+}
+</script>
+
+</body>
+</html>
