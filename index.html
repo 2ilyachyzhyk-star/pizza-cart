@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pizza Cart</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    h2 { margin-top: 40px; }
+    .pizza { margin-bottom: 20px; }
+    button { padding: 5px 10px; margin-left: 10px; }
+    #cart { margin-top: 30px; border-top: 2px solid black; padding-top: 20px; }
+  </style>
+</head>
+<body>
+
+<h1>🍕 Order Your Pizza</h1>
+
+<div id="menu"></div>
+
+<div id="cart">
+  <h2>🛒 Cart</h2>
+  <ul id="cart-items"></ul>
+  <p id="empty">Cart is empty</p>
+  <h3>Total: $<span id="total">0</span></h3>
+  <button onclick="clearCart()">Clear Cart</button>
+</div>
+
+<script>
+const pizzas = ["Pepperoni", "Margherita", "Hawaiian", "BBQ Chicken", "Veggie Supreme"];
+const prices = { Small: 10, Medium: 13, Large: 16 };
+
+let cart = [];
+
+const menuDiv = document.getElementById("menu");
+
+pizzas.forEach(pizza => {
+  let div = document.createElement("div");
+  div.className = "pizza";
+  div.innerHTML = `<strong>${pizza}</strong><br>`;
+  
+  Object.keys(prices).forEach(size => {
+    div.innerHTML += `
+      ${size} ($${prices[size]})
+      <button onclick="addToCart('${pizza}', '${size}')">Add</button>
+    `;
+  });
+
+  menuDiv.appendChild(div);
+});
+
+function addToCart(pizza, size) {
+  cart.push({ pizza, size, price: prices[size] });
+  updateCart();
+}
+
+function removeItem(index) {
+  cart.splice(index, 1);
+  updateCart();
+}
+
+function clearCart() {
+  cart = [];
+  updateCart();
+}
+
+function updateCart() {
+  const cartItems = document.getElementById("cart-items");
+  const totalSpan = document.getElementById("total");
+  const emptyMsg = document.getElementById("empty");
+
+  cartItems.innerHTML = "";
+  let total = 0;
+
+  if (cart.length === 0) {
+    emptyMsg.style.display = "block";
+  } else {
+    emptyMsg.style.display = "none";
+  }
+
+  cart.forEach((item, index) => {
+    total += item.price;
+    cartItems.innerHTML += `
+      <li>
+        ${item.pizza} (${item.size}) - $${item.price}
+        <button onclick="removeItem(${index})">Remove</button>
+      </li>
+    `;
+  });
+
+  totalSpan.innerText = total;
+}
+</script>
+
+</body>
+</html>
