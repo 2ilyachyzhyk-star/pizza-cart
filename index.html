@@ -22,6 +22,10 @@
   <p id="empty">Cart is empty</p>
   <h3>Total: $<span id="total">0</span></h3>
   <button onclick="clearCart()">Clear Cart</button>
+  <button id="checkoutBtn" onclick="checkout()" style="display:none; margin-left:10px;">
+    Proceed to Checkout
+  </button>
+  <p id="checkoutMessage" style="color:green; font-weight:bold;"></p>
 </div>
 
 <script>
@@ -70,11 +74,15 @@ function updateCart() {
   cartItems.innerHTML = "";
   let total = 0;
 
-  if (cart.length === 0) {
-    emptyMsg.style.display = "block";
-  } else {
-    emptyMsg.style.display = "none";
-  }
+  const checkoutBtn = document.getElementById("checkoutBtn");
+
+if (cart.length === 0) {
+  emptyMsg.style.display = "block";
+  checkoutBtn.style.display = "none";
+} else {
+  emptyMsg.style.display = "none";
+  checkoutBtn.style.display = "inline-block";
+}
 
   cart.forEach((item, index) => {
     total += item.price;
@@ -89,6 +97,9 @@ function updateCart() {
   totalSpan.innerText = total;
 }
 </script>
-
+  function checkout() {
+  document.getElementById("checkoutMessage").innerText =
+    "✅ Thank you for your order! (Demo Checkout)";
+}
 </body>
 </html>
